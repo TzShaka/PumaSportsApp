@@ -1,0 +1,242 @@
+/* Estilos para el componente de clientes */
+.cliente-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.tabla-clientes {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-clientes .mat-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabla-clientes .mat-header-row {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.tabla-clientes .mat-header-cell {
+  color: white !important;
+  font-weight: 600;
+  border-bottom: none;
+}
+
+.tabla-clientes .mat-row:hover {
+  background: #f8fafc;
+  transition: background-color 0.3s ease;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.estado-activo {
+  background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
+  color: #047857;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.estado-inactivo {
+  background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+  color: #dc2626;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.email-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.email-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.dni-text {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-weight: 600;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.telefono-text {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  color: #4b5563;
+}
+
+.acciones-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.boton-accion {
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.boton-accion:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filtro-container {
+  margin-bottom: 2rem;
+}
+
+.header-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-title {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .tabla-clientes {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+  
+  .acciones-container {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cliente-container {
+    padding: 1rem;
+  }
+  
+  .mat-table {
+    font-size: 0.875rem;
+  }
+  
+  .mat-header-cell,
+  .mat-cell {
+    padding: 8px 4px;
+  }
+  
+  .estado-badge {
+    padding: 4px 8px;
+    font-size: 0.625rem;
+  }
+}
+
+/* Animaciones */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-up {
+  animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+/* Tooltips */
+.mat-tooltip {
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 4px;
+}
+
+/* Custom Scrollbar */
+.tabla-clientes::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tabla-clientes::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.tabla-clientes::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.tabla-clientes::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

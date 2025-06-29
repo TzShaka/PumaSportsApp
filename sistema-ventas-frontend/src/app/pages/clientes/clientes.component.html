@@ -1,0 +1,152 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Gestión de Clientes</h2>
+      <button mat-raised-button color="primary" (click)="abrirDialogo()" class="bg-blue-600 hover:bg-blue-700">
+        <mat-icon>person_add</mat-icon>
+        Nuevo Cliente
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="mb-4">
+      <mat-form-field appearance="outline" class="w-full max-w-md">
+        <mat-label>Buscar clientes</mat-label>
+        <input matInput 
+               [(ngModel)]="filtro" 
+               (keyup)="aplicarFiltro()" 
+               placeholder="Buscar por nombre, DNI, email...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full mat-elevation-z2">
+
+        <!-- ID -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> ID </th>
+          <td mat-cell *matCellDef="let cliente"> {{ cliente.id }} </td>
+        </ng-container>
+
+        <!-- DNI -->
+        <ng-container matColumnDef="dni">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> DNI </th>
+          <td mat-cell *matCellDef="let cliente" class="font-mono"> {{ cliente.dni }} </td>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Nombre </th>
+          <td mat-cell *matCellDef="let cliente" class="font-medium"> {{ cliente.nombre }} </td>
+        </ng-container>
+
+        <!-- Apellido -->
+        <ng-container matColumnDef="apellido">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Apellido </th>
+          <td mat-cell *matCellDef="let cliente"> {{ cliente.apellido || '-' }} </td>
+        </ng-container>
+
+        <!-- Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Email </th>
+          <td mat-cell *matCellDef="let cliente">
+            <a href="mailto:{{ cliente.email }}" class="text-blue-600 hover:text-blue-800 underline">
+              {{ cliente.email }}
+            </a>
+          </td>
+        </ng-container>
+
+        <!-- Teléfono -->
+        <ng-container matColumnDef="telefono">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Teléfono </th>
+          <td mat-cell *matCellDef="let cliente">
+            <span *ngIf="cliente.telefono; else noTelefono" class="font-mono">
+              {{ cliente.telefono }}
+            </span>
+            <ng-template #noTelefono>
+              <span class="text-gray-400">-</span>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <!-- Fecha Registro -->
+        <ng-container matColumnDef="fechaRegistro">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Fecha Registro </th>
+          <td mat-cell *matCellDef="let cliente">
+            {{ cliente.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="activo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Estado </th>
+          <td mat-cell *matCellDef="let cliente">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="cliente.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+              {{ cliente.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="font-semibold"> Acciones </th>
+          <td mat-cell *matCellDef="let cliente">
+            <div class="flex space-x-2">
+              <!-- Editar -->
+              <button mat-icon-button 
+                      color="primary" 
+                      (click)="abrirDialogo(cliente)"
+                      matTooltip="Editar cliente">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <!-- Cambiar estado -->
+              <button mat-icon-button 
+                      [color]="cliente.activo ? 'warn' : 'accent'"
+                      (click)="toggleActivo(cliente)"
+                      [matTooltip]="cliente.activo ? 'Desactivar' : 'Activar'">
+                <mat-icon>{{ cliente.activo ? 'person_off' : 'person' }}</mat-icon>
+              </button>
+
+              <!-- Eliminar -->
+              <button mat-icon-button 
+                      color="warn" 
+                      (click)="eliminarCliente(cliente)"
+                      matTooltip="Eliminar cliente">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Encabezados y filas -->
+        <tr mat-header-row *matHeaderRowDef="columnas" class="bg-gray-50"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas;" class="hover:bg-gray-50 transition-colors"></tr>
+        
+        <!-- Sin datos -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center text-gray-500 py-8" [attr.colspan]="columnas.length">
+            <div *ngIf="!cargando">
+              <mat-icon class="text-4xl mb-2 text-gray-400">people</mat-icon>
+              <p>No se encontraron clientes</p>
+              <p class="text-sm">¿Quizás quieras agregar el primer cliente?</p>
+            </div>
+            <div *ngIf="cargando" class="flex items-center justify-center">
+              <mat-icon class="animate-spin mr-2">refresh</mat-icon>
+              Cargando clientes...
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="mt-4 text-sm text-gray-600">
+      <p>Total de clientes: {{ dataSource.data.length }}</p>
+    </div>
+  </div>
+</div>

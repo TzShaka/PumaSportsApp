@@ -1,0 +1,78 @@
+<div class="contenedor-principal">
+  <!-- Barra lateral -->
+
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <h2><i class="fas fa-boxes"></i> Gestión de Productos</h2>
+
+    <!-- Botón para abrir formulario -->
+    <div class="acciones">
+      <button class="btn-primary" (click)="abrirFormulario()">+ Nuevo Producto</button>
+    </div>
+
+    <!-- Modal del formulario -->
+    <div class="modal-backdrop" *ngIf="mostrarFormulario" (click)="cerrarModal()">
+      <div class="modal-contenido" (click)="$event.stopPropagation()">
+        <h3>{{ modoEdicion ? 'Editar Producto' : 'Crear Producto' }}</h3>
+
+        <form #form="ngForm" (ngSubmit)="guardarProducto(form)">
+          <label>Nombre del Producto:</label>
+          <input name="nombreProducto" [(ngModel)]="nuevoProducto.nombreProducto" placeholder="Ej: Camiseta técnica" required />
+
+          <label>Cantidad a Producir:</label>
+          <input type="number" name="cantidadProducida" [(ngModel)]="nuevoProducto.cantidadProducida" min="1" required />
+
+          <label>Diseño Asociado:</label>
+          <div class="custom-select-wrapper">
+            <select name="idDisenio" [(ngModel)]="nuevoProducto.idDisenio" required class="custom-select">
+              <option [ngValue]="null" disabled>-- Seleccionar diseño --</option>
+              <option *ngFor="let d of disenios" [ngValue]="d.idDisenio">
+                {{ d.nombrePrenda }} - {{ d.descripcion }}
+              </option>
+            </select>
+            <i class="fas fa-chevron-down select-icon"></i>
+          </div>
+
+          <div class="modal-botones">
+            <button type="submit" class="btn-guardar" [disabled]="!form.valid">
+              <i class="fas fa-save"></i> {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+            </button>
+            <button type="button" class="btn-cancelar" (click)="cerrarModal()">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </form>
+
+        <div class="toast" *ngIf="mensaje">
+          {{ mensaje }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de productos -->
+    <table class="tabla-productos">
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Diseño</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.nombreProducto }}</td>
+        <td>{{ p.cantidadProducida }}</td>
+        <td>{{ p.disenio?.nombrePrenda || 'Sin diseño' }}</td>
+        <td>{{ p.disenio?.descripcion || '-' }}</td>
+        <td>
+          <button class="btn-editar" (click)="abrirFormulario(p)"><i class="fas fa-edit"></i></button>
+          <button class="btn-eliminar" (click)="eliminarProducto(p.idProducto)"><i class="fas fa-trash-alt"></i></button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>

@@ -1,0 +1,91 @@
+<div class="contenedor-principal">
+  <!-- Barra lateral -->
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <h2>ActiSports - Gestión de Materiales</h2>
+
+    <!-- Acciones principales -->
+    <div class="acciones">
+      <input type="text" [(ngModel)]="busqueda" (input)="filtrarMateriales()" placeholder="Buscar por nombre..." />
+      <button (click)="mostrarFormulario = true">Agregar Material</button>
+    </div>
+
+    <!-- Modal flotante -->
+    <div class="modal-backdrop" *ngIf="mostrarFormulario" (click)="cerrarModal()">
+      <div class="modal-contenido" (click)="$event.stopPropagation()">
+        <h3>{{ modoEdicion ? 'Editar Material' : 'Agregar Material' }}</h3>
+        <form (ngSubmit)="guardarMaterial()" #form="ngForm">
+          <input type="text" name="nombreMaterial" [(ngModel)]="nuevoMaterial.nombreMaterial" placeholder="Nombre" required />
+          <input type="text" name="tipoMaterial" [(ngModel)]="nuevoMaterial.tipoMaterial" placeholder="Tipo" required />
+          <input type="text" name="composicion" [(ngModel)]="nuevoMaterial.composicion" placeholder="Composición" required />
+          <input type="text" name="propiedadesClave" [(ngModel)]="nuevoMaterial.propiedadesClave" placeholder="Propiedades Clave" />
+          <input type="text" name="usosComunes" [(ngModel)]="nuevoMaterial.usosComunes" placeholder="Usos Comunes" />
+
+          <label class="checkbox">
+            <input type="checkbox" name="requiereMezcla" [(ngModel)]="nuevoMaterial.requiereMezcla" />
+            ¿Requiere mezcla?
+          </label>
+
+          <input type="text" name="proveedoresSugeridos" [(ngModel)]="nuevoMaterial.proveedoresSugeridos" placeholder="Proveedores sugeridos" />
+          <input type="number" name="costoUnitarioAprox" [(ngModel)]="nuevoMaterial.costoUnitarioAprox" placeholder="Costo unitario" />
+          <input type="text" name="unidadMedida" [(ngModel)]="nuevoMaterial.unidadMedida" placeholder="Unidad de medida" />
+          <input type="number" name="stockDisponible" [(ngModel)]="nuevoMaterial.stockDisponible" placeholder="Stock disponible" />
+
+          <div class="modal-botones">
+            <button type="submit" class="btn-guardar" [disabled]="!form.valid">Guardar</button>
+            <button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabla de materiales -->
+    <table class="tabla-materiales">
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Composición</th>
+        <th>Propiedades</th>
+        <th>Usos</th>
+        <th>Mezcla</th>
+        <th>Proveedor</th>
+        <th>Costo</th>
+        <th>Unidad</th>
+        <th>Stock</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let material of materialesFiltrados">
+        <td>{{ material.nombreMaterial }}</td>
+        <td>{{ material.tipoMaterial }}</td>
+        <td>{{ material.composicion }}</td>
+        <td>{{ material.propiedadesClave }}</td>
+        <td>{{ material.usosComunes }}</td>
+        <td>{{ material.requiereMezcla ? 'Sí' : 'No' }}</td>
+        <td>{{ material.proveedoresSugeridos }}</td>
+        <td>{{ material.costoUnitarioAprox }}</td>
+        <td>{{ material.unidadMedida }}</td>
+        <td [ngClass]="{ 'bajo-stock': material.stockDisponible < 10 }">
+          {{ material.stockDisponible }}
+        </td>
+        <td>
+          <button class="btn-editar" (click)="editarMaterial(material)">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn-eliminar" (click)="eliminarMaterial(material.idMaterial)">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Toast flotante -->
+    <div class="toast" *ngIf="mensaje">
+      {{ mensaje }}
+    </div>
+  </main>
+</div>

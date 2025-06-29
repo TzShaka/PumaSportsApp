@@ -1,0 +1,129 @@
+<div class="contenedor-principal">
+  <!-- Barra lateral -->
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <h2>ActiSports - Gestión de Diseños</h2>
+
+    <div class="acciones">
+      <button (click)="mostrarFormulario = true">Nuevo Diseño</button>
+    </div>
+
+    <!-- Modal para formulario de diseño -->
+    <div class="modal-backdrop" *ngIf="mostrarFormulario" (click)="cerrarModal()">
+      <div class="modal-contenido" (click)="$event.stopPropagation()">
+        <h3>{{ modoEdicion ? 'Editar Diseño' : 'Registrar Diseño' }}</h3>
+
+        <!-- SECCIÓN DE MATERIALES (standalone para no bloquear form.valid) -->
+        <div class="material-selector">
+          <label>Material</label>
+          <select
+            [(ngModel)]="materialSeleccionado.idMaterial"
+            name="materialSelect"
+            [ngModelOptions]="{ standalone: true }"
+            required>
+            <option [ngValue]="null" disabled selected>-- Selecciona material --</option>
+            <option *ngFor="let mat of materiales" [ngValue]="mat.idMaterial">
+              {{ mat.nombreMaterial }}
+            </option>
+          </select>
+
+          <input
+            type="number"
+            [(ngModel)]="materialSeleccionado.cantidadUsada"
+            name="cantidadUsada"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Cantidad usada"
+            min="0.01" step="0.01"
+            required />
+
+          <button type="button" class="btn-agregar" (click)="agregarMaterial()">
+            <i class="fas fa-plus-circle"></i> Agregar
+          </button>
+        </div>
+
+        <!-- Lista de materiales añadidos -->
+        <ul class="materiales-usados">
+          <li *ngFor="let m of nuevoDisenio.materialesUsados; let i = index">
+            {{ m.nombreMaterial }} - {{ m.cantidadUsada }} unidades
+            <button type="button" class="btn-quitar" (click)="eliminarMaterial(i)">✕</button>
+          </li>
+        </ul>
+
+        <!-- FORMULARIO PRINCIPAL -->
+        <form (ngSubmit)="guardarDisenio()" #form="ngForm">
+          <input
+            type="text"
+            name="nombrePrenda"
+            [(ngModel)]="nuevoDisenio.nombrePrenda"
+            placeholder="Nombre de prenda"
+            required />
+
+          <textarea
+            name="descripcion"
+            [(ngModel)]="nuevoDisenio.descripcion"
+            placeholder="Descripción"
+            required>
+          </textarea>
+
+          <div class="modal-botones">
+            <button
+              type="submit"
+              class="btn-guardar"
+              [disabled]="!form.valid || !nuevoDisenio.materialesUsados.length">
+              <i class="fas fa-save"></i>
+              {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+            </button>
+
+            <button
+              type="button"
+              class="btn-cancelar"
+              (click)="cerrarModal()">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </form>
+
+        <!-- Toast -->
+        <div class="toast" *ngIf="mensaje">{{ mensaje }}</div>
+      </div>
+    </div>
+
+    <!-- Tabla de diseños -->
+    <table class="tabla-materiales">
+      <thead>
+      <tr>
+        <th>Prenda</th>
+        <th>Descripción</th>
+        <th>Fecha</th>
+        <th>Materiales Usados</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let d of disenios">
+        <td>{{ d.nombrePrenda }}</td>
+        <td>{{ d.descripcion }}</td>
+        <td>{{ d.fechaCreacion | date:'shortDate' }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let mu of d.materialesUsados">
+              {{ mu.nombreMaterial }} - {{ mu.cantidadUsada }}
+            </li>
+          </ul>
+        </td>
+        <td>
+          <div class="boton-acciones">
+            <button class="editar" (click)="editarDisenio(d)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="eliminar" (click)="eliminarDisenio(d.idDisenio)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</div>

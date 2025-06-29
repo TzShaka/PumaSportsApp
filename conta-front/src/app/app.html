@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ActiSports Sidebar</title>
+  <link rel="stylesheet" href="app.scss" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="contenedor-principal">
+  <aside class="barra-lateral">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/892/892458.png" alt="Logo ActiSports" />
+      <span class="logo-text">ActiSports</span>
+    </div>
+
+
+    <nav>
+      <ul>
+        <li>
+          <a routerLink="/almacen" routerLinkActive="activo">
+            <i class="fas fa-warehouse"></i>
+            <span class="text">Almacén</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/productos" routerLinkActive="activo">
+            <i class="fas fa-tshirt"></i>
+            <span class="text">Productos</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/disenos" routerLinkActive="activo">
+            <i class="fas fa-pencil-ruler"></i>
+            <span class="text">Diseños</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/ventas" routerLinkActive="activo">
+            <i class="fas fa-cash-register"></i>
+            <span class="text">Ventas</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="contenido">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Gestión de Categorías</h2>
+      <button mat-raised-button color="primary" (click)="abrirDialogo()" class="bg-blue-600 hover:bg-blue-700">
+        <mat-icon>add</mat-icon>
+        Nueva Categoría
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="mb-4">
+      <mat-form-field appearance="outline" class="w-full max-w-md">
+        <mat-label>Buscar categorías</mat-label>
+        <input matInput 
+               [(ngModel)]="filtro" 
+               (keyup)="aplicarFiltro()" 
+               placeholder="Buscar por nombre...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full mat-elevation-z2">
+
+        <!-- ID -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> ID </th>
+          <td mat-cell *matCellDef="let categoria"> {{ categoria.id }} </td>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Nombre </th>
+          <td mat-cell *matCellDef="let categoria" class="font-medium"> {{ categoria.nombre }} </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Estado </th>
+          <td mat-cell *matCellDef="let categoria">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+                  [ngClass]="categoria.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+              {{ categoria.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Fecha Creación -->
+        <ng-container matColumnDef="fechaCreacion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="font-semibold"> Fecha Creación </th>
+          <td mat-cell *matCellDef="let categoria">
+            {{ categoria.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="font-semibold"> Acciones </th>
+          <td mat-cell *matCellDef="let categoria">
+            <div class="flex space-x-2">
+              <!-- Editar -->
+              <button mat-icon-button 
+                      color="primary" 
+                      (click)="abrirDialogo(categoria)"
+                      matTooltip="Editar categoría">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <!-- Cambiar estado -->
+              <button mat-icon-button 
+                      [color]="categoria.estado ? 'warn' : 'accent'"
+                      (click)="cambiarEstado(categoria)"
+                      [matTooltip]="categoria.estado ? 'Desactivar' : 'Activar'">
+                <mat-icon>{{ categoria.estado ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+
+              <!-- Eliminar -->
+              <button mat-icon-button 
+                      color="warn" 
+                      (click)="eliminarCategoria(categoria)"
+                      matTooltip="Eliminar categoría">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Encabezados y filas -->
+        <tr mat-header-row *matHeaderRowDef="columnas" class="bg-gray-50"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas;" class="hover:bg-gray-50 transition-colors"></tr>
+        
+        <!-- Sin datos -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center text-gray-500 py-8" [attr.colspan]="columnas.length">
+            <div *ngIf="!cargando">
+              <mat-icon class="text-4xl mb-2 text-gray-400">category</mat-icon>
+              <p>No se encontraron categorías</p>
+            </div>
+            <div *ngIf="cargando" class="flex items-center justify-center">
+              <mat-icon class="animate-spin mr-2">refresh</mat-icon>
+              Cargando categorías...
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
