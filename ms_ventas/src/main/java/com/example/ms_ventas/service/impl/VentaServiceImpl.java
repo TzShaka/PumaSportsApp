@@ -1,6 +1,6 @@
 package com.example.ms_ventas.service.impl;
 
-import com.example.ms_ventas.client.AlmacenClient;
+import com.example.ms_ventas.client.ProductoClient;
 import com.example.ms_ventas.client.ClienteClient;
 import com.example.ms_ventas.dto.ClienteDTO;
 import com.example.ms_ventas.dto.DetalleVentaDTO;
@@ -25,7 +25,8 @@ public class VentaServiceImpl implements VentaService {
     private final VentaRepository ventaRepository;
     private final DetalleVentaRepository detalleVentaRepository;
     private final ClienteClient clienteClient;
-    private final AlmacenClient almacenClient;
+    private final ProductoClient productoClient;
+
 
     @Override
     @Transactional
@@ -56,7 +57,7 @@ public class VentaServiceImpl implements VentaService {
         BigDecimal totalVenta = BigDecimal.ZERO;
 
         for (DetalleVentaDTO det : ventaDTO.getDetalles()) {
-            almacenClient.descontarStock(det.getProductoId(), det.getCantidad());
+            productoClient.descontarStock(det.getProductoId(), det.getCantidad());
 
             BigDecimal precio = BigDecimal.valueOf(det.getPrecioUnitario());
             BigDecimal cantidad = BigDecimal.valueOf(det.getCantidad());
@@ -198,7 +199,7 @@ public class VentaServiceImpl implements VentaService {
 
         List<DetalleVenta> detalles = detalleVentaRepository.findByVentaId(id);
         for (DetalleVenta d : detalles) {
-            almacenClient.descontarStock(d.getProductoId(), d.getCantidad());
+            productoClient.descontarStock(d.getProductoId(), d.getCantidad());
         }
 
         detalleVentaRepository.deleteByVentaId(id);
@@ -221,7 +222,7 @@ public class VentaServiceImpl implements VentaService {
         // 🔄 Revertir stock de detalles anteriores
         List<DetalleVenta> detallesAnteriores = detalleVentaRepository.findByVentaId(venta.getId());
         for (DetalleVenta d : detallesAnteriores) {
-            almacenClient.descontarStock(d.getProductoId(), d.getCantidad());
+            productoClient.descontarStock(d.getProductoId(), d.getCantidad());
         }
 
         // 🗑️ Eliminar detalles anteriores
@@ -231,7 +232,7 @@ public class VentaServiceImpl implements VentaService {
         BigDecimal totalVenta = BigDecimal.ZERO;
 
         for (DetalleVentaDTO det : ventaDTO.getDetalles()) {
-            almacenClient.descontarStock(det.getProductoId(), det.getCantidad());
+            productoClient.descontarStock(det.getProductoId(), det.getCantidad());
 
             BigDecimal precio = BigDecimal.valueOf(det.getPrecioUnitario());
             BigDecimal cantidad = BigDecimal.valueOf(det.getCantidad());
