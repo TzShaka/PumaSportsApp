@@ -1,6 +1,5 @@
 package com.example.ms.proveedor2.dto;
 
-
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,12 +7,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-//@NoArgsConstructor
-//@AllArgsConstructor
 public class ProveedorDTO {
 
     @Id
     private Long id;
+
+    // ✅ NUEVO CAMPO - Código del proveedor
+    @Size(max = 100, message = "El código del proveedor no puede exceder 100 caracteres")
+    private String codigoProveedor;
 
     @NotBlank(message = "El nombre de la empresa es obligatorio")
     @Size(max = 255, message = "El nombre de la empresa no puede exceder 255 caracteres")
@@ -37,11 +38,16 @@ public class ProveedorDTO {
     @Size(max = 100, message = "El país no puede exceder 100 caracteres")
     private String pais;
 
+    // ✅ Constructor vacío
     public ProveedorDTO() {
     }
 
-    public ProveedorDTO(Long id, String nombreEmpresa, String contacto, String correoElectronico, String telefono, String direccion, String ciudad, String pais) {
+    // ✅ Constructor con todos los parámetros (ACTUALIZADO)
+    public ProveedorDTO(Long id, String codigoProveedor, String nombreEmpresa, String contacto,
+                        String correoElectronico, String telefono, String direccion,
+                        String ciudad, String pais) {
         this.id = id;
+        this.codigoProveedor = codigoProveedor;
         this.nombreEmpresa = nombreEmpresa;
         this.contacto = contacto;
         this.correoElectronico = correoElectronico;
@@ -51,12 +57,22 @@ public class ProveedorDTO {
         this.pais = pais;
     }
 
+    // ✅ Getters y Setters existentes...
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    // ✅ NUEVOS - Getter y Setter para codigoProveedor
+    public String getCodigoProveedor() {
+        return codigoProveedor;
+    }
+
+    public void setCodigoProveedor(String codigoProveedor) {
+        this.codigoProveedor = codigoProveedor;
     }
 
     public String getPais() {
