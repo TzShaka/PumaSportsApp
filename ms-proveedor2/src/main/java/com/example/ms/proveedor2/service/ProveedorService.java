@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,13 +49,17 @@ public class ProveedorService {
             throw new DuplicateEmailException("Ya existe un proveedor con el correo: " + proveedorDTO.getCorreoElectronico());
         }
 
-        // ✅ NUEVO - Verificar código de proveedor duplicado
+        // ✅ Verificar código de proveedor duplicado
         if (proveedorDTO.getCodigoProveedor() != null &&
                 proveedorRepository.existsByCodigoProveedor(proveedorDTO.getCodigoProveedor())) {
             throw new DuplicateEmailException("Ya existe un proveedor con el código: " + proveedorDTO.getCodigoProveedor());
         }
 
         Proveedor proveedor = dtoToEntity(proveedorDTO);
+
+        // 🔥 IMPORTANTE: El @PrePersist se encargará de establecer fechaCreacion automáticamente
+        // No necesitas setearla manualmente aquí
+
         Proveedor savedProveedor = proveedorRepository.save(proveedor);
         return entityToDTO(savedProveedor);
     }
@@ -71,15 +76,15 @@ public class ProveedorService {
             throw new DuplicateEmailException("Ya existe un proveedor con el correo: " + proveedorDTO.getCorreoElectronico());
         }
 
-        // ✅ NUEVO - Verificar código duplicado (solo si es diferente al actual)
+        // ✅ Verificar código duplicado (solo si es diferente al actual)
         if (proveedorDTO.getCodigoProveedor() != null &&
                 !proveedorDTO.getCodigoProveedor().equals(existingProveedor.getCodigoProveedor()) &&
                 proveedorRepository.existsByCodigoProveedor(proveedorDTO.getCodigoProveedor())) {
             throw new DuplicateEmailException("Ya existe un proveedor con el código: " + proveedorDTO.getCodigoProveedor());
         }
 
-        // Actualizar campos
-        existingProveedor.setCodigoProveedor(proveedorDTO.getCodigoProveedor()); // ✅ NUEVO
+        // Actualizar campos (NO actualices fechaCreacion, debe mantenerse)
+        existingProveedor.setCodigoProveedor(proveedorDTO.getCodigoProveedor());
         existingProveedor.setNombreEmpresa(proveedorDTO.getNombreEmpresa());
         existingProveedor.setContacto(proveedorDTO.getContacto());
         existingProveedor.setCorreoElectronico(proveedorDTO.getCorreoElectronico());
@@ -87,7 +92,7 @@ public class ProveedorService {
         existingProveedor.setDireccion(proveedorDTO.getDireccion());
         existingProveedor.setCiudad(proveedorDTO.getCiudad());
         existingProveedor.setPais(proveedorDTO.getPais());
-
+        // 🔥 IMPORTANTE: NO actualizar fechaCreacion en updates
 
         Proveedor updatedProveedor = proveedorRepository.save(existingProveedor);
         return entityToDTO(updatedProveedor);
@@ -98,12 +103,12 @@ public class ProveedorService {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
 
-        // ✅ MEJORADO - Eliminación lógica en lugar de física
+        // ✅ Eliminación lógica en lugar de física
         proveedor.setActivo(false);
         proveedorRepository.save(proveedor);
     }
 
-    // ✅ NUEVO - Eliminación física (si realmente necesitas borrar de la BD)
+    // ✅ Eliminación física (si realmente necesitas borrar de la BD)
     public void deleteProveedorPermanently(Long id) {
         if (!proveedorRepository.existsById(id)) {
             throw new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id);
@@ -122,7 +127,7 @@ public class ProveedorService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ NUEVO - Buscar por código de proveedor
+    // ✅ Buscar por código de proveedor
     @Transactional(readOnly = true)
     public ProveedorDTO getProveedorByCodigoProveedor(String codigoProveedor) {
         Proveedor proveedor = proveedorRepository.findByCodigoProveedor(codigoProveedor)
@@ -159,7 +164,7 @@ public class ProveedorService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ NUEVO - Obtener proveedores inactivos
+    // ✅ Obtener proveedores inactivos
     @Transactional(readOnly = true)
     public List<ProveedorDTO> obtenerInactivos() {
         return proveedorRepository.findByActivoFalse()
@@ -168,7 +173,7 @@ public class ProveedorService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ NUEVO - Activar proveedor
+    // ✅ Activar proveedor
     public ProveedorDTO activarProveedor(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
@@ -178,7 +183,7 @@ public class ProveedorService {
         return entityToDTO(savedProveedor);
     }
 
-    // ✅ NUEVO - Desactivar proveedor
+    // ✅ Desactivar proveedor
     public ProveedorDTO desactivarProveedor(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
@@ -190,7 +195,7 @@ public class ProveedorService {
 
     // ==================== MÉTODOS DE CONVERSIÓN ====================
 
-    // ✅ CORREGIDO - Incluye todos los campos
+    // ✅ CORREGIDO - Incluye fechaCreacion y activo
     private ProveedorDTO entityToDTO(Proveedor proveedor) {
         ProveedorDTO dto = new ProveedorDTO();
         dto.setId(proveedor.getId());
@@ -202,11 +207,13 @@ public class ProveedorService {
         dto.setDireccion(proveedor.getDireccion());
         dto.setCiudad(proveedor.getCiudad());
         dto.setPais(proveedor.getPais());
+        dto.setFechaCreacion(proveedor.getFechaCreacion()); // 🔥 NUEVO
+        dto.setActivo(proveedor.getActivo()); // ✅ EXISTENTE
 
         return dto;
     }
 
-    // ✅ CORREGIDO - Incluye todos los campos
+    // ✅ CORREGIDO - Incluye todos los campos pero NO setea fechaCreacion (se hace automático)
     private Proveedor dtoToEntity(ProveedorDTO dto) {
         Proveedor proveedor = new Proveedor();
         proveedor.setId(dto.getId());
@@ -218,6 +225,8 @@ public class ProveedorService {
         proveedor.setDireccion(dto.getDireccion());
         proveedor.setCiudad(dto.getCiudad());
         proveedor.setPais(dto.getPais());
+        proveedor.setActivo(dto.getActivo());
+        // 🔥 NO setear fechaCreacion aquí - se establece automáticamente en @PrePersist
 
         return proveedor;
     }

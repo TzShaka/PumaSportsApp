@@ -6,13 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ProveedorDTO {
 
     @Id
     private Long id;
 
-    // ✅ NUEVO CAMPO - Código del proveedor
+    // ✅ Código del proveedor
     @Size(max = 100, message = "El código del proveedor no puede exceder 100 caracteres")
     private String codigoProveedor;
 
@@ -38,6 +40,12 @@ public class ProveedorDTO {
     @Size(max = 100, message = "El país no puede exceder 100 caracteres")
     private String pais;
 
+    // 🔥 CAMPO FALTANTE - Fecha de creación
+    private LocalDateTime fechaCreacion;
+
+    // ✅ Campo activo
+    private Boolean activo;
+
     // ✅ Constructor vacío
     public ProveedorDTO() {
     }
@@ -45,7 +53,7 @@ public class ProveedorDTO {
     // ✅ Constructor con todos los parámetros (ACTUALIZADO)
     public ProveedorDTO(Long id, String codigoProveedor, String nombreEmpresa, String contacto,
                         String correoElectronico, String telefono, String direccion,
-                        String ciudad, String pais) {
+                        String ciudad, String pais, LocalDateTime fechaCreacion, Boolean activo) {
         this.id = id;
         this.codigoProveedor = codigoProveedor;
         this.nombreEmpresa = nombreEmpresa;
@@ -55,6 +63,8 @@ public class ProveedorDTO {
         this.direccion = direccion;
         this.ciudad = ciudad;
         this.pais = pais;
+        this.fechaCreacion = fechaCreacion;
+        this.activo = activo;
     }
 
     // ✅ Getters y Setters existentes...
@@ -66,13 +76,31 @@ public class ProveedorDTO {
         this.id = id;
     }
 
-    // ✅ NUEVOS - Getter y Setter para codigoProveedor
+    // ✅ Getter y Setter para codigoProveedor
     public String getCodigoProveedor() {
         return codigoProveedor;
     }
 
     public void setCodigoProveedor(String codigoProveedor) {
         this.codigoProveedor = codigoProveedor;
+    }
+
+    // 🔥 NUEVOS - Getter y Setter para fechaCreacion
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    // ✅ Getter y Setter para activo
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public String getPais() {

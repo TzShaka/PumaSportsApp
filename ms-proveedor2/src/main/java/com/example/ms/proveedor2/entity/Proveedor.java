@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "proveedores")
 @Data
@@ -19,13 +21,17 @@ public class Proveedor {
     @Column(name = "id")
     private Long id;
 
-    // ✅ NUEVO CAMPO - Código del proveedor (el que causaba el error)
+    // ✅ NUEVO CAMPO - Código del proveedor
     @Column(name = "codigo_proveedor", nullable = false, unique = true)
     @Size(max = 100, message = "El código del proveedor no puede exceder 100 caracteres")
     private String codigoProveedor;
 
     @Column(name = "activo")
     private Boolean activo;
+
+    // 🔥 CAMPO FALTANTE - Este era el problema
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDateTime fechaCreacion;
 
     @PrePersist
     public void prePersist() {
@@ -35,6 +41,10 @@ public class Proveedor {
         // ✅ Generar código automáticamente si no existe
         if (codigoProveedor == null || codigoProveedor.isEmpty()) {
             codigoProveedor = generarCodigoProveedor();
+        }
+        // 🔥 ESTABLECER FECHA DE CREACIÓN AUTOMÁTICAMENTE
+        if (fechaCreacion == null) {
+            fechaCreacion = LocalDateTime.now();
         }
     }
 
@@ -77,10 +87,10 @@ public class Proveedor {
     public Proveedor() {
     }
 
-    // ✅ Constructor personalizado ACTUALIZADO (incluye codigoProveedor)
+    // ✅ Constructor personalizado ACTUALIZADO (incluye fechaCreacion)
     public Proveedor(String codigoProveedor, String nombreEmpresa, String contacto,
                      String correoElectronico, String telefono, String direccion,
-                     String ciudad, String pais) {
+                     String ciudad, String pais, LocalDateTime fechaCreacion) {
         this.codigoProveedor = codigoProveedor;
         this.nombreEmpresa = nombreEmpresa;
         this.contacto = contacto;
@@ -89,9 +99,10 @@ public class Proveedor {
         this.direccion = direccion;
         this.ciudad = ciudad;
         this.pais = pais;
+        this.fechaCreacion = fechaCreacion;
     }
 
-    // ✅ Constructor SIN codigoProveedor (se genera automático)
+    // ✅ Constructor SIN codigoProveedor ni fechaCreacion (se generan automático)
     public Proveedor(String nombreEmpresa, String contacto, String correoElectronico,
                      String telefono, String direccion, String ciudad, String pais) {
         this.nombreEmpresa = nombreEmpresa;
@@ -112,13 +123,22 @@ public class Proveedor {
         this.id = id;
     }
 
-    // ✅ NUEVOS - Getter y Setter para codigoProveedor
+    // ✅ Getter y Setter para codigoProveedor
     public String getCodigoProveedor() {
         return codigoProveedor;
     }
 
     public void setCodigoProveedor(String codigoProveedor) {
         this.codigoProveedor = codigoProveedor;
+    }
+
+    // 🔥 NUEVOS - Getter y Setter para fechaCreacion
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Boolean getActivo() {
