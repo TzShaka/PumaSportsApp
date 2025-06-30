@@ -98,22 +98,25 @@ public class ProveedorService {
         return entityToDTO(updatedProveedor);
     }
 
-    // Eliminar proveedor (eliminación lógica)
+    // ✅ ELIMINACIÓN FÍSICA - BORRA COMPLETAMENTE DE LA BASE DE DATOS
     public void deleteProveedor(Long id) {
-        Proveedor proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
-
-        // ✅ Eliminación lógica en lugar de física
-        proveedor.setActivo(false);
-        proveedorRepository.save(proveedor);
-    }
-
-    // ✅ Eliminación física (si realmente necesitas borrar de la BD)
-    public void deleteProveedorPermanently(Long id) {
+        // Verificar que el proveedor existe
         if (!proveedorRepository.existsById(id)) {
             throw new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id);
         }
+
+        // Eliminación física - Se borra completamente de la base de datos
         proveedorRepository.deleteById(id);
+    }
+
+    // ✅ OPCIONAL: Mantener eliminación lógica con otro nombre
+    public void desactivarProveedor(Long id) {
+        Proveedor proveedor = proveedorRepository.findById(id)
+                .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
+
+        // Eliminación lógica - Solo cambia el estado a inactivo
+        proveedor.setActivo(false);
+        proveedorRepository.save(proveedor);
     }
 
     // ==================== MÉTODOS DE BÚSQUEDA ====================
@@ -179,16 +182,6 @@ public class ProveedorService {
                 .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
 
         proveedor.setActivo(true);
-        Proveedor savedProveedor = proveedorRepository.save(proveedor);
-        return entityToDTO(savedProveedor);
-    }
-
-    // ✅ Desactivar proveedor
-    public ProveedorDTO desactivarProveedor(Long id) {
-        Proveedor proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new ProveedorNotFoundException("Proveedor no encontrado con ID: " + id));
-
-        proveedor.setActivo(false);
         Proveedor savedProveedor = proveedorRepository.save(proveedor);
         return entityToDTO(savedProveedor);
     }
