@@ -25,6 +25,18 @@ public class ClienteController {
         return clienteService.buscar(id);
     }
 
+    // 🆕 NUEVO: Endpoint para búsqueda por nombre
+    @GetMapping("/buscar")
+    public List<Cliente> buscarPorNombre(@RequestParam String nombre) {
+        return clienteService.buscarPorNombre(nombre);
+    }
+
+    // 🆕 NUEVO: Endpoint para verificar si existe email
+    @GetMapping("/existe-email")
+    public boolean existeEmail(@RequestParam String email) {
+        return clienteService.existeEmail(email);
+    }
+
     @PostMapping
     public Cliente guardar(@RequestBody Cliente cliente) {
         return clienteService.guardar(cliente);

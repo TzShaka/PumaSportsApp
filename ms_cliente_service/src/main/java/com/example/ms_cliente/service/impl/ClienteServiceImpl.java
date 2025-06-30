@@ -40,4 +40,16 @@ public class ClienteServiceImpl implements ClienteService {
     public void eliminar(Integer id) {
         clienteRepository.deleteById(id);
     }
+
+    // 🆕 Implementación de búsqueda por nombre
+    @Override
+    public List<Cliente> buscarPorNombre(String nombre) {
+        return clienteRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    // 🆕 Implementación de verificar email existente
+    @Override
+    public boolean existeEmail(String email) {
+        return clienteRepository.existsByEmail(email);
+    }
 }

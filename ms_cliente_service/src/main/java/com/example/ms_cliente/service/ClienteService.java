@@ -10,4 +10,8 @@ public interface ClienteService {
     Cliente guardar(Cliente cliente);
     Cliente actualizar(Integer id, Cliente cliente);
     void eliminar(Integer id);
+
+    // 🆕 Nuevos métodos para búsqueda
+    List<Cliente> buscarPorNombre(String nombre);
+    boolean existeEmail(String email);
 }
