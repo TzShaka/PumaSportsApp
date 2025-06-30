@@ -32,17 +32,20 @@ public class DisenioServiceImpl implements DisenioService {
 
         List<MaterialUsado> usados = new ArrayList<>();
 
-        for (MaterialUsadoDTO matDTO : dto.getMaterialesUsados()) {
-            // Restar stock usando FeignClient
-            materialClient.restarStock(matDTO.getIdMaterial(), matDTO.getCantidadUsada());
+        // 🔧 VALIDACIÓN AGREGADA: Verificar si materialesUsados no es null
+        if (dto.getMaterialesUsados() != null && !dto.getMaterialesUsados().isEmpty()) {
+            for (MaterialUsadoDTO matDTO : dto.getMaterialesUsados()) {
+                // Restar stock usando FeignClient
+                materialClient.restarStock(matDTO.getIdMaterial(), matDTO.getCantidadUsada());
 
-            // Agregar a la lista de materiales usados
-            MaterialUsado m = new MaterialUsado();
-            m.setNombreMaterial(matDTO.getNombreMaterial());
-            m.setIdMaterial(matDTO.getIdMaterial());
-            m.setCantidadUsada(matDTO.getCantidadUsada());
-            m.setDisenio(disenio);
-            usados.add(m);
+                // Agregar a la lista de materiales usados
+                MaterialUsado m = new MaterialUsado();
+                m.setNombreMaterial(matDTO.getNombreMaterial());
+                m.setIdMaterial(matDTO.getIdMaterial());
+                m.setCantidadUsada(matDTO.getCantidadUsada());
+                m.setDisenio(disenio);
+                usados.add(m);
+            }
         }
 
         disenio.setMaterialesUsados(usados);
@@ -56,20 +59,25 @@ public class DisenioServiceImpl implements DisenioService {
     @Override
     public List<DisenioDTO> listarDisenios() {
         return disenioRepository.findAll().stream().map(d -> {
-            List<MaterialUsadoDTO> materiales = d.getMaterialesUsados().stream().map(mu -> {
-                MaterialUsadoDTO m = new MaterialUsadoDTO();
-                m.setIdMaterial(mu.getIdMaterial());
-                m.setCantidadUsada(mu.getCantidadUsada());
+            List<MaterialUsadoDTO> materiales = new ArrayList<>();
 
-                try {
-                    MaterialDTO material = materialClient.obtenerMaterialPorId(mu.getIdMaterial());
-                    m.setNombreMaterial(material.getNombreMaterial());
-                } catch (Exception e) {
-                    m.setNombreMaterial("No encontrado");
-                }
+            // 🔧 VALIDACIÓN AGREGADA: Verificar si materialesUsados no es null
+            if (d.getMaterialesUsados() != null && !d.getMaterialesUsados().isEmpty()) {
+                materiales = d.getMaterialesUsados().stream().map(mu -> {
+                    MaterialUsadoDTO m = new MaterialUsadoDTO();
+                    m.setIdMaterial(mu.getIdMaterial());
+                    m.setCantidadUsada(mu.getCantidadUsada());
 
-                return m;
-            }).collect(Collectors.toList());
+                    try {
+                        MaterialDTO material = materialClient.obtenerMaterialPorId(mu.getIdMaterial());
+                        m.setNombreMaterial(material.getNombreMaterial());
+                    } catch (Exception e) {
+                        m.setNombreMaterial("No encontrado");
+                    }
+
+                    return m;
+                }).collect(Collectors.toList());
+            }
 
             return new DisenioDTO(
                     d.getIdDisenio(),
@@ -85,20 +93,25 @@ public class DisenioServiceImpl implements DisenioService {
     public DisenioDTO obtenerDisenioPorId(Long id) {
         Disenio d = disenioRepository.findById(id).orElseThrow();
 
-        List<MaterialUsadoDTO> materiales = d.getMaterialesUsados().stream().map(mu -> {
-            MaterialUsadoDTO m = new MaterialUsadoDTO();
-            m.setIdMaterial(mu.getIdMaterial());
-            m.setCantidadUsada(mu.getCantidadUsada());
+        List<MaterialUsadoDTO> materiales = new ArrayList<>();
 
-            try {
-                MaterialDTO material = materialClient.obtenerMaterialPorId(mu.getIdMaterial());
-                m.setNombreMaterial(material.getNombreMaterial());
-            } catch (Exception e) {
-                m.setNombreMaterial("No encontrado");
-            }
+        // 🔧 VALIDACIÓN AGREGADA: Verificar si materialesUsados no es null
+        if (d.getMaterialesUsados() != null && !d.getMaterialesUsados().isEmpty()) {
+            materiales = d.getMaterialesUsados().stream().map(mu -> {
+                MaterialUsadoDTO m = new MaterialUsadoDTO();
+                m.setIdMaterial(mu.getIdMaterial());
+                m.setCantidadUsada(mu.getCantidadUsada());
 
-            return m;
-        }).collect(Collectors.toList());
+                try {
+                    MaterialDTO material = materialClient.obtenerMaterialPorId(mu.getIdMaterial());
+                    m.setNombreMaterial(material.getNombreMaterial());
+                } catch (Exception e) {
+                    m.setNombreMaterial("No encontrado");
+                }
+
+                return m;
+            }).collect(Collectors.toList());
+        }
 
         return new DisenioDTO(
                 d.getIdDisenio(),
