@@ -7,7 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MaterialUsadoDTO {
-    private String nombreMaterial;
     private Long idMaterial;
+    private String nombreMaterial;
     private Double cantidadUsada;
+    private String unidadMedida;
 }
