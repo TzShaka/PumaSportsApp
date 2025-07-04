@@ -69,7 +69,7 @@ export class Productos implements OnInit {
       : this.http.post('http://localhost:8085/api/productos', productoParaEnviar);
 
     req.subscribe(() => {
-      this.cargarProductos(); 
+      this.cargarProductos();
       this.cerrarModal();
       this.mostrarMensaje(this.modoEdicion ? 'Producto actualizado' : 'Producto creado');
     });

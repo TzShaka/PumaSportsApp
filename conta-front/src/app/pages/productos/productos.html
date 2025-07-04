@@ -26,10 +26,11 @@
           <label>Diseño Asociado:</label>
           <div class="custom-select-wrapper">
             <select name="idDisenio" [(ngModel)]="nuevoProducto.idDisenio" required class="custom-select">
-              <option [ngValue]="null" disabled>-- Seleccionar diseño --</option>
+              <option value="" disabled selected>-- Seleccionar diseño --</option>
               <option *ngFor="let d of disenios" [value]="d.idDisenio">
                 {{ d.nombrePrenda }} - {{ d.descripcion }}
               </option>
+
 
               {{ d.nombrePrenda }} - {{ d.descripcion }}
               </option>
