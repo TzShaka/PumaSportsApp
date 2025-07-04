@@ -54,16 +54,27 @@ export class Productos implements OnInit {
 
   guardarProducto(form: any) {
     if (!form.valid || !this.nuevoProducto.idDisenio) return;
+
+    const productoParaEnviar = {
+      idProducto: this.nuevoProducto.idProducto,
+      nombreProducto: this.nuevoProducto.nombreProducto,
+      cantidadProducida: this.nuevoProducto.cantidadProducida,
+      diseno: {
+        idDisenio: this.nuevoProducto.idDisenio
+      }
+    };
+
     const req = this.modoEdicion
-      ? this.http.put(`http://localhost:8085/api/productos/${this.nuevoProducto.idProducto}`, this.nuevoProducto)
-      : this.http.post('http://localhost:8085/api/productos', this.nuevoProducto);
+      ? this.http.put(`http://localhost:8085/api/productos/${productoParaEnviar.idProducto}`, productoParaEnviar)
+      : this.http.post('http://localhost:8085/api/productos', productoParaEnviar);
 
     req.subscribe(() => {
-      this.cargarProductos();
+      this.cargarProductos(); 
       this.cerrarModal();
       this.mostrarMensaje(this.modoEdicion ? 'Producto actualizado' : 'Producto creado');
     });
   }
+
 
   eliminarProducto(id: number) {
     if (confirm('¿Eliminar este producto?')) {

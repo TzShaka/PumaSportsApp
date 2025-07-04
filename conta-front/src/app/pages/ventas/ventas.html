@@ -1,1 +1,64 @@
-<p>ventas works!</p>
+<main class="contenido">
+  <h2>ActiSports - Ventas</h2>
+
+  <div class="acciones">
+    <button (click)="mostrarFormulario = true">Nueva Venta</button>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="mostrarFormulario" (click)="cancelar()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <h3>Registrar Venta</h3>
+
+      <form (ngSubmit)="guardarVenta()" #form="ngForm">
+        <input type="text" name="clienteNombre" [(ngModel)]="nuevaVenta.clienteNombre" placeholder="Nombre del cliente" required>
+        <input type="email" name="clienteEmail" [(ngModel)]="nuevaVenta.clienteEmail" placeholder="Email del cliente">
+        <input type="text" name="clienteTelefono" [(ngModel)]="nuevaVenta.clienteTelefono" placeholder="Teléfono del cliente">
+
+        <div class="material-selector">
+          <input type="text" [(ngModel)]="detalle.descripcion" name="descripcion" placeholder="Producto/Descripción" required>
+          <input type="number" [(ngModel)]="detalle.cantidad" name="cantidad" placeholder="Cantidad" min="1" required>
+          <input type="number" [(ngModel)]="detalle.precioUnitario" name="precio" placeholder="Precio unitario" step="0.01" required>
+          <input type="number" [(ngModel)]="detalle.descuento" name="descuento" placeholder="Descuento" step="0.01">
+          <button type="button" (click)="agregarDetalle()">Agregar producto</button>
+        </div>
+
+        <ul class="materiales-usados">
+          <li *ngFor="let d of nuevaVenta.detalles; let i = index">
+            {{ d.descripcion }} - {{ d.cantidad }} x S/.{{ d.precioUnitario }} = S/.{{ (d.cantidad * d.precioUnitario - (d.descuento || 0)).toFixed(2) }}
+            <button type="button" (click)="quitarDetalle(i)">✕</button>
+          </li>
+        </ul>
+
+        <div class="modal-botones">
+          <button type="submit" [disabled]="!nuevaVenta.detalles.length">Guardar</button>
+          <button type="button" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+
+      <div class="toast" *ngIf="mensaje">{{ mensaje }}</div>
+    </div>
+  </div>
+
+  <table class="tabla-materiales">
+    <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Cliente</th>
+      <th>Total</th>
+      <th>Detalles</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let v of ventas">
+      <td>{{ v.fecha | date:'short' }}</td>
+      <td>{{ v.clienteNombre }}</td>
+      <td>S/. {{ v.total }}</td>
+      <td>
+        <ul>
+          <li *ngFor="let d of v.detalles">{{ d.descripcion }} ({{ d.cantidad }} x S/.{{ d.precioUnitario }})</li>
+        </ul>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</main>

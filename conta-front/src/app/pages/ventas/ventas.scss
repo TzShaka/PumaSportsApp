@@ -1,0 +1,128 @@
+ventas .contenido {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f9fc;
+  color: #2a2a2a;
+}
+
+h2 {
+  color: #0077cc;
+  margin-bottom: 1rem;
+}
+
+.acciones button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.acciones button:hover {
+  background-color: #0056b3;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contenido {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+input, textarea, select {
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.material-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.materiales-usados li {
+  margin-bottom: 5px;
+  list-style: none;
+}
+
+.materiales-usados button {
+  background: crimson;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 0 8px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-botones button {
+  padding: 8px 14px;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-botones button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-botones button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.modal-botones button[type="button"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-botones button[type="button"]:hover {
+  background-color: #c82333;
+}
+
+.tabla-materiales {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+.tabla-materiales th,
+.tabla-materiales td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.toast {
+  background-color: #0077cc;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-top: 1rem;
+  border-radius: 5px;
+}

@@ -27,8 +27,11 @@
           <div class="custom-select-wrapper">
             <select name="idDisenio" [(ngModel)]="nuevoProducto.idDisenio" required class="custom-select">
               <option [ngValue]="null" disabled>-- Seleccionar diseño --</option>
-              <option *ngFor="let d of disenios" [ngValue]="d.idDisenio">
+              <option *ngFor="let d of disenios" [value]="d.idDisenio">
                 {{ d.nombrePrenda }} - {{ d.descripcion }}
+              </option>
+
+              {{ d.nombrePrenda }} - {{ d.descripcion }}
               </option>
             </select>
             <i class="fas fa-chevron-down select-icon"></i>
